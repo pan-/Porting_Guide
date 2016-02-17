@@ -4,7 +4,7 @@ docs_dir: Docs
 
 pages:
 - ['index.md','Introduction to the porting guides']
-- ['low_power_ticker.md','Components','Low power ticker']
-
+- ['low_power_ticker.md','HAL','Low power ticker']
+- ['uVisor.md','Additional components','mbed OS uVisor']
 
 extra_css: ['FullCSS.css']
