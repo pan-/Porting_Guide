@@ -1,4 +1,4 @@
-# Introduction to the porting guides
+# Introduction to the mbed Porting Guide
 
 The mbed Porting Guide walks you through porting mbed products to Cortex-M based hardware:
 
