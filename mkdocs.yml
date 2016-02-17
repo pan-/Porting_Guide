@@ -6,5 +6,8 @@ pages:
 - ['index.md','Introduction to the porting guides']
 - ['low_power_ticker.md','HAL','Low power ticker']
 - ['uVisor.md','mbed OS uVisor','uVisor']
+- ['mbed_client.md','Additional components','mbed Client']
+- ['6lowpan.md','Additional components','The mbed 6LoWPAN stack']
+
 
 extra_css: ['FullCSS.css']
