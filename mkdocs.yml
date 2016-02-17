@@ -3,7 +3,7 @@ site_name: Porting Guides
 docs_dir: Docs
 
 pages:
-- ['index.md','Introduction to the porting guides']
+- ['index.md','mbed Porting Guide']
 - ['HAL/HAL_intro.md','HAL','Porting the hardware abstraction layer']
 - ['HAL/low_power_ticker.md','HAL','Low power ticker']
 - ['uVisor/uVisor.md','mbed OS uVisor','uVisor']
