@@ -33,13 +33,13 @@ This should initialize the resources required for the timer: set up the timer, s
 ```c
 void lp_ticker_init(void)
 {
-	if (rtc_is_running()) {
-    	return;
-	}
-	// initialize rtc
-	rtc_init();
-	rtc_enable();
-	enable_vectors();
+    if (rtc_is_running()) {
+        return;
+    }
+    // initialize rtc
+    rtc_init();
+    rtc_enable();
+    enable_vectors();
 }
 ```
 
@@ -76,8 +76,8 @@ The *now* argument is intended for calculating the delta between now and time va
 ```c
 void lp_ticker_set_interrupt(uint32_t now, uint32_t time)
 {
-	(void)now;
-	timer_set_match_interrupt(time);
+    (void)now;
+    timer_set_match_interrupt(time);
 }
 ```
 
@@ -126,10 +126,10 @@ This function is similar to ``lp_ticker_set_interrupt``. It provides additional 
 ```c
 void lp_ticker_sleep_until(uint32_t now, uint32_t time)
 {
-	lp_ticker_set_interrupt(now, time);
-	sleep_t sleep_obj;
-	mbed_enter_sleep(&sleep_obj);
-	mbed_exit_sleep(&sleep_obj);
+    lp_ticker_set_interrupt(now, time);
+    sleep_t sleep_obj;
+    mbed_enter_sleep(&sleep_obj);
+    mbed_exit_sleep(&sleep_obj);
 }
 ```
 
