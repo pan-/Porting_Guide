@@ -1,4 +1,4 @@
-# Porting guide for sleep
+# Sleep
 
 This document provides a porting guide for mbed-hal version 1.0.0.
 
