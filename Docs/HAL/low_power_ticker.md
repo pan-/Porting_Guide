@@ -10,10 +10,20 @@ The low power ticker API is declared in the [lp_ticker_api header file](https://
 - A 32-bit timer counter (for timers with a lower bit counter, software expansion can be used), it should be counting up.
 - An overflow counter (to be able to form a 64-bit timestamp).
 - The timer’s minimum resolution should be 1 millisecond.
+- Implementation of sleep HAL (required by ``lp_ticker_sleep_until()``).
 
 The low power timer should be able to provide a wake-up source for MCU sleep that's as low as possible, to reduce the power consumption. It should never stop running.
 
 The most common timer that satisfies all requirements is RTC.
+
+The minimum set of includes for the implementation is:
+
+```c
+#include "lp_ticker_api.h"         // lp ticker API
+#include "sleep_api.h"             // sleep API
+#include "objects.h"               // sleep_t object declaration
+#include "uvisor-lib/uvisor-lib.h" // vIRQ_xxx functions if interrupts are used
+```
 
 ## API
 
@@ -33,13 +43,13 @@ This should initialize the resources required for the timer: set up the timer, s
 ```c
 void lp_ticker_init(void)
 {
-	if (rtc_is_running()) {
-    	return;
-	}
-	// initialize rtc
-	rtc_init();
-	rtc_enable();
-	enable_vectors();
+    if (rtc_is_running()) {
+        return;
+    }
+    // initialize rtc
+    rtc_init();
+    rtc_enable();
+    enable_vectors();
 }
 ```
 
@@ -76,8 +86,8 @@ The *now* argument is intended for calculating the delta between now and time va
 ```c
 void lp_ticker_set_interrupt(uint32_t now, uint32_t time)
 {
-	(void)now;
-	timer_set_match_interrupt(time);
+    (void)now;
+    timer_set_match_interrupt(time);
 }
 ```
 
@@ -126,10 +136,14 @@ This function is similar to ``lp_ticker_set_interrupt``. It provides additional 
 ```c
 void lp_ticker_sleep_until(uint32_t now, uint32_t time)
 {
-	lp_ticker_set_interrupt(now, time);
-	sleep_t sleep_obj;
-	mbed_enter_sleep(&sleep_obj);
-	mbed_exit_sleep(&sleep_obj);
+    // set the ticker interrupt
+    lp_ticker_set_interrupt(now, time);
+    // define sleep_t object required by sleep API
+    sleep_t sleep_obj;
+    mbed_enter_sleep(&sleep_obj);
+    // this might require additional steps before we recover fully from the sleep,
+    // but we don't do any in this example
+    mbed_exit_sleep(&sleep_obj);
 }
 ```
 
