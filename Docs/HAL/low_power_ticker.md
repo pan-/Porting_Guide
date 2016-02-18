@@ -16,6 +16,15 @@ The low power timer should be able to provide a wake-up source for MCU sleep tha
 
 The most common timer that satisfies all requirements is RTC.
 
+The minimum set of includes for the implementation is:
+
+```c
+#include "lp_ticker_api.h"         // lp ticker API
+#include "sleep_api.h"             // sleep API
+#include "objects.h"               // sleep_t object declaration
+#include "uvisor-lib/uvisor-lib.h" // vIRQ_xxx functions if interrupts are used
+```
+
 ## API
 
 ### lp_ticker_init
