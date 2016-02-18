@@ -8,6 +8,7 @@ pages:
 - ['HAL/HAL_intro.md','HAL','Porting the hardware abstraction layer']
 - ['HAL/low_power_ticker.md','HAL','Low power ticker']
 - ['uVisor/uVisor.md','mbed OS uVisor','uVisor']
+- ['Targets/targets_intro.md','Targets','Porting targets to mbed OS']
 - ['Add_Comp/mbed_client.md','Additional components','mbed Client']
 - ['Add_Comp/6lowpan.md','Additional components','The mbed 6LoWPAN stack']
 
