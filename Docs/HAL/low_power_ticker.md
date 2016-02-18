@@ -10,7 +10,7 @@ The low power ticker API is declared in the [lp_ticker_api header file](https://
 - A 32-bit timer counter (for timers with a lower bit counter, software expansion can be used), it should be counting up.
 - An overflow counter (to be able to form a 64-bit timestamp).
 - The timer’s minimum resolution should be 1 millisecond.
-- sleep HAL implemented (required by ``lp_ticker_sleep_until()``)
+- Implementation of sleep HAL (required by ``lp_ticker_sleep_until()``).
 
 The low power timer should be able to provide a wake-up source for MCU sleep that's as low as possible, to reduce the power consumption. It should never stop running.
 
@@ -141,8 +141,8 @@ void lp_ticker_sleep_until(uint32_t now, uint32_t time)
     // define sleep_t object required by sleep API
     sleep_t sleep_obj;
     mbed_enter_sleep(&sleep_obj);
-    // this might require additional steps before we recover fully from the sleep
-    // we don't do any in this example
+    // this might require additional steps before we recover fully from the sleep,
+    // but we don't do any in this example
     mbed_exit_sleep(&sleep_obj);
 }
 ```
