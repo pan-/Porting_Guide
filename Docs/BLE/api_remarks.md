@@ -10,3 +10,12 @@ members does not takes this parameter....
 irrelevant
 * `reset`: How this function can fail, what is possible to do in such case ?
 * `getVersion`: Why on hearth this is not const ???
+
+
+# Gap
+`setAddress`: Optional arguments depending on other arguments values, what a
+great example of a kitchensink API. What about the address parameter, is it in/out
+in case of PRIVATE_RESOLVABLE_ADDRESS ?
+`getAddress`: Why not const ?
+`GapState_t`: Why fields are not bool ?
+`connection timeout`: It should be possible to know which connection started timeout. 
