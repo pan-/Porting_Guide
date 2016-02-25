@@ -18,4 +18,5 @@ great example of a kitchensink API. What about the address parameter, is it in/o
 in case of PRIVATE_RESOLVABLE_ADDRESS ?
 `getAddress`: Why not const ?
 `GapState_t`: Why fields are not bool ?
-`connection timeout`: It should be possible to know which connection started timeout. 
+`connection timeout`: It should be possible to know which connection started timeout.
+`updateConnectionParams`: Why there is no user callback for this ?? 

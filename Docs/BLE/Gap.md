@@ -1,4 +1,4 @@
-# BLEInstanceBase
+# Gap
 
 This document provides a porting guide for the class [`Gap`] available
 in the [ble module] version 2.5.1.
@@ -454,6 +454,10 @@ BLE_ERROR_NONE<---|                            |
                   +                            +
 ```
 
+If parameters in input are not valid or if the stack cannot process the request,
+the function should return an appropriate error code.
+
+
 ### `setPreferredConnectionParams`
 
 ```c++
@@ -462,15 +466,17 @@ BLE_ERROR_NONE<---|                            |
  * defaults that the peripheral would like to have in a connection. The
  * choice of the connection parameters is eventually up to the central.
  *
- * @param[in] params
- *               The structure containing the desired parameters.
+ * @param[in] params The structure containing the desired parameters.
  *
  * @return BLE_ERROR_NONE if the preferred connection params were set
- *         correctly.
+ * correctly.
  */
 virtual ble_error_t setPreferredConnectionParams(const ConnectionParams_t* params);
-
 ```
+
+This function set the preferred connection parameters for the peripheral role.
+These parameters should be visible in the characteristic  
+`Peripheral Prefered Connection Parameters` of the `Generic Access Service`.
 
 
 ### `updateConnectionParams`
@@ -482,16 +488,18 @@ virtual ble_error_t setPreferredConnectionParams(const ConnectionParams_t* param
  * this will send the corresponding L2CAP request and wait for the central
  * to perform the procedure.
  *
- * @param[in] handle
- *              Connection Handle.
- * @param[in] params
- *              Pointer to desired connection parameters. If NULL is provided on a peripheral role,
- *              the parameters in the PPCP characteristic of the GAP service will be used instead.
+ * @param[in] handle Connection Handle.
+ * @param[in] params Pointer to desired connection parameters. If NULL is provided
+ * on a peripheral role, the parameters in the PPCP characteristic of the GAP
+ * service will be used instead.
  *
  * @return BLE_ERROR_NONE if the connection parameters were updated correctly.
  */
 virtual ble_error_t updateConnectionParams(Handle_t handle, const ConnectionParams_t* params);
 ```
+
+This function initiate a `Connection Parameters Request Procedure` for a given
+connection. There is user callback to call at the end of the procedure.
 
 
 ### `setDeviceName`
@@ -500,13 +508,16 @@ virtual ble_error_t updateConnectionParams(Handle_t handle, const ConnectionPara
 /**
  * Set the device name characteristic in the GAP service.
  *
- * @param[in] deviceName
- *              The new value for the device-name. This is a UTF-8 encoded, <b>NULL-terminated</b> string.
+ * @param[in] deviceName The new value for the device-name. This is a UTF-8
+ * encoded, <b>NULL-terminated</b> string.
  *
  * @return BLE_ERROR_NONE if the device name was set correctly.
  */
 virtual ble_error_t setDeviceName(const uint8_t* deviceName);
 ```
+
+Set the name of the device. This change should be visible in the
+`Device Name Characteristic` of the `Generic Access Service`.
 
 
 ### `getDeviceName`
@@ -515,27 +526,27 @@ virtual ble_error_t setDeviceName(const uint8_t* deviceName);
 /**
  * Get the value of the device name characteristic in the GAP service.
  *
- * @param[out]    deviceName
- *                  Pointer to an empty buffer where the UTF-8 *non NULL-
- *                  terminated* string will be placed. Set this
- *                  value to NULL in order to obtain the deviceName-length
- *                  from the 'length' parameter.
+ * @param[out] deviceName Pointer to an empty buffer where the UTF-8 *non NULL-
+ * terminated* string will be placed. Set this value to NULL in order to obtain
+ * the deviceName-length from the 'length' parameter.
  *
  * @param[in,out] lengthP
- *                  (on input) Length of the buffer pointed to by deviceName;
- *                  (on output) the complete device name length (without the
- *                     null terminator).
+ *  - (on input) Length of the buffer pointed to by deviceName;
+ *  - (on output) the complete device name length (without the null terminator).
  *
  * @return BLE_ERROR_NONE if the device name was fetched correctly from the
- *         underlying BLE stack.
+ * underlying BLE stack.
  *
  * @note If the device name is longer than the size of the supplied buffer,
- *       length will return the complete device name length, and not the
- *       number of bytes actually returned in deviceName. The application may
- *       use this information to retry with a suitable buffer size.
+ * length will return the complete device name length, and not the number of bytes
+ * actually returned in deviceName. The application may use this information to
+ * retry with a suitable buffer size.
  */
 virtual ble_error_t getDeviceName(uint8_t* deviceName, unsigned* lengthP);
 ```
+
+This function fetch the value of the `Device Name Characteristic` of the
+`Generic Access Service`.
 
 
 ### `setAppearance`
