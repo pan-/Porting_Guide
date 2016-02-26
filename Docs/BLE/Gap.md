@@ -1095,6 +1095,19 @@ ignored.
 virtual ble_error_t reset();
 ```
 
+This function reset the state of the [`Gap`] object.
+
+All ongoing operations launched by [`Gap`] should stop (connections, scan,
+advertising, radio notification).
+
+[`Gap`] should rollback to its initial state (advertising, scan parameters,
+advertising payload, scan payload ), ...
+
+An implementation should call this function from the base (`Gap::reset()`) as its
+first statement. The implementation from [`Gap`] does the following things:
+* calling the shutdownCallChain
+* reset `Gap::state`
+* reset all callbacks.
 
 
 [ble module]: https://github.com/ARMmbed/ble

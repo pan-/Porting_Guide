@@ -22,4 +22,6 @@ in case of PRIVATE_RESOLVABLE_ADDRESS ?
 `updateConnectionParams`: Why there is no user callback for this ??
 `startScan` is inconstitent with other APIs.
 where is `processRadioNotification` ?
-wheer is the function stopRadioNotification ?
+where is the function stopRadioNotification ?
+`reset`: what a mess, it is difficult to state what the implementation should do +
+forcing the porter to call the function from the base as a start is a design defect.
