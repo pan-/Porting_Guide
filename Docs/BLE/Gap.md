@@ -14,7 +14,7 @@ related to the Bluetooth GAP layer. The main functionalities are:
 * Scan of peers advertising
 * Connection/Disconnection to peers
 * Whitelist management
-*
+* Manage characteristics values of the `Generic Access Service`
 
 A valid port of BLE_API should provide an implementation for this class.
 
@@ -499,7 +499,7 @@ virtual ble_error_t updateConnectionParams(Handle_t handle, const ConnectionPara
 ```
 
 This function initiate a `Connection Parameters Request Procedure` for a given
-connection. There is user callback to call at the end of the procedure.
+connection. There is no user callback to call at the end of the procedure.
 
 
 ### `setDeviceName`
@@ -555,14 +555,15 @@ This function fetch the value of the `Device Name Characteristic` of the
 /**
  * Set the appearance characteristic in the GAP service.
  *
- * @param[in] appearance
- *              The new value for the device-appearance.
+ * @param[in] appearance The new value for the device-appearance.
  *
  * @return BLE_ERROR_NONE if the new appearance was set correctly.
  */
 virtual ble_error_t setAppearance(GapAdvertisingData::Appearance appearance);
 ```
 
+This function update the value of the `Appearance Characteristic` of the `Generic
+Access Service`.
 
 ### `getAppearance`
 
@@ -579,6 +580,9 @@ virtual ble_error_t setAppearance(GapAdvertisingData::Appearance appearance);
 virtual ble_error_t getAppearance(GapAdvertisingData::Appearance* appearanceP);
 ```
 
+This function fetch the value of the `Appearance Characteristic` of the
+`Generic Access Service`.
+
 
 ### `setTxPower`
 
@@ -586,11 +590,9 @@ virtual ble_error_t getAppearance(GapAdvertisingData::Appearance* appearanceP);
 /**
  * Set the radio's transmit power.
  *
- * @param[in] txPower
- *              Radio's transmit power in dBm.
+ * @param[in] txPower Radio's transmit power in dBm.
  *
- * @return BLE_ERROR_NONE if the new radio's transmit power was set
- *         correctly.
+ * @return BLE_ERROR_NONE if the new radio's transmit power was set correctly.
  */
 virtual ble_error_t setTxPower(int8_t txPower);
 ```
@@ -602,10 +604,8 @@ virtual ble_error_t setTxPower(int8_t txPower);
 /**
  * Query the underlying stack for permitted arguments for setTxPower().
  *
- * @param[out] valueArrayPP
- *                 Out parameter to receive the immutable array of Tx values.
- * @param[out] countP
- *                 Out parameter to receive the array's size.
+ * @param[out] valueArrayPP Out parameter to receive the immutable array of Tx values.
+ * @param[out] countP Out parameter to receive the array's size.
  */
 virtual void getPermittedTxPowerValues(const int8_t** valueArrayPP, size_t* countP);
 ```
@@ -619,14 +619,13 @@ virtual void getPermittedTxPowerValues(const int8_t** valueArrayPP, size_t* coun
  *
  * @return Maximum size of the whitelist.
  *
- * @note If using mbed OS the size of the whitelist can be configured by
- *       setting the YOTTA_CFG_WHITELIST_MAX_SIZE macro in your yotta
- *       config file.
- *
  * @experimental
  */
 virtual uint8_t getMaxWhitelistSize() const;
 ```
+
+This API query the maximum number of addresses that can be contained by the
+ble underlying stack.
 
 
 ### `getWhitelist`
@@ -637,13 +636,13 @@ virtual uint8_t getMaxWhitelistSize() const;
  * advertising or initiating a connection depending on the filter policies.
  *
  * @param[in,out]   whitelist
- *                  (on input) whitelist.capacity contains the maximum number
- *                  of addresses to be returned.
- *                  (on output) The populated whitelist with copies of the
- *                  addresses in the implementation's whitelist.
+ * - (on input) whitelist.capacity contains the maximum number of addresses to
+ *   be returned.
+ * - (on output) The populated whitelist with copies of the addresses in the
+ *   implementation's whitelist.
  *
  * @return BLE_ERROR_NONE if the implementation's whitelist was successfully
- *         copied into the supplied reference.
+ * copied into the supplied reference.
  *
  * @experimental
  */
@@ -658,12 +657,11 @@ virtual ble_error_t getWhitelist(Whitelist_t& whitelist) const;
  * Set the internal whitelist to be used by the Link Layer when scanning,
  * advertising or initiating a connection depending on the filter policies.
  *
- * @param[in]     whitelist
- *                  A reference to a whitelist containing the addresses to
- *                  be added to the internal whitelist.
+ * @param[in] whitelist A reference to a whitelist containing the addresses to
+ * be added to the internal whitelist.
  *
  * @return BLE_ERROR_NONE if the implementation's whitelist was successfully
- *         populated with the addresses in the given whitelist.
+ * populated with the addresses in the given whitelist.
  *
  * @note The whitelist must not contain addresses of type @ref
  *       BLEProtocol::AddressType_t::RANDOM_PRIVATE_NON_RESOLVABLE, this
@@ -678,7 +676,6 @@ virtual ble_error_t getWhitelist(Whitelist_t& whitelist) const;
 virtual ble_error_t setWhitelist(const Whitelist_t& whitelist);
 ```
 
-
 ### `setAdvertisingPolicyMode`
 
 ```c++
@@ -686,15 +683,30 @@ virtual ble_error_t setWhitelist(const Whitelist_t& whitelist);
  * Set the advertising policy filter mode to be used in the next call
  * to startAdvertising().
  *
- * @param[in] mode
- *              The new advertising policy filter mode.
+ * @param[in] mode The new advertising policy filter mode.
  *
  * @return BLE_ERROR_NONE if the specified policy filter mode was set
- *         successfully.
+ * successfully.
  *
  * @experimental
  */
 virtual ble_error_t setAdvertisingPolicyMode(AdvertisingPolicyMode_t mode);
+```
+
+The stack should apply this policy when the device start advertising.
+
+### `getAdvertisingPolicyMode`
+
+```c++
+/**
+ * Get the advertising policy filter mode that will be used in the next
+ * call to startAdvertising().
+ *
+ * @return The set advertising policy filter mode.
+ *
+ * @experimental
+ */
+virtual AdvertisingPolicyMode_t getAdvertisingPolicyMode() const;
 ```
 
 
@@ -705,8 +717,7 @@ virtual ble_error_t setAdvertisingPolicyMode(AdvertisingPolicyMode_t mode);
  * Set the scan policy filter mode to be used in the next call
  * to startScan().
  *
- * @param[in] mode
- *              The new scan policy filter mode.
+ * @param[in] mode The new scan policy filter mode.
  *
  * @return BLE_ERROR_NONE if the specified policy filter mode was set
  *         successfully.
@@ -716,6 +727,22 @@ virtual ble_error_t setAdvertisingPolicyMode(AdvertisingPolicyMode_t mode);
 virtual ble_error_t setScanningPolicyMode(ScanningPolicyMode_t mode);
 ```
 
+The stack should apply this policy when the device start scanning.
+
+
+### `getScanningPolicyMode`
+
+```c++
+/**
+ * Get the scan policy filter mode that will be used in the next
+ * call to startScan().
+ *
+ * @return The set scan policy filter mode.
+ *
+ * @experimental
+ */
+virtual ScanningPolicyMode_t getScanningPolicyMode() const;
+```
 
 ### `setInitiatorPolicyMode`
 
@@ -734,48 +761,16 @@ virtual ble_error_t setScanningPolicyMode(ScanningPolicyMode_t mode);
 virtual ble_error_t setInitiatorPolicyMode(InitiatorPolicyMode_t mode);
 ```
 
-
-### `getAdvertisingPolicyMode`
-
-```c++
-/**
- * Get the advertising policy filter mode that will be used in the next
- * call to startAdvertising().
- *
- * @return The set advertising policy filter mode.
- *
- * @experimental
- */
-virtual AdvertisingPolicyMode_t getAdvertisingPolicyMode() const;
-```
-
-
-
-### `getScanningPolicyMode`
-
-```c++
-/**
- * Get the scan policy filter mode that will be used in the next
- * call to startScan().
- *
- * @return The set scan policy filter mode.
- *
- * @experimental
- */
-virtual ScanningPolicyMode_t getScanningPolicyMode() const;
-```
-
-
 ### `getInitiatorPolicyMode`
 
 ```c++
 /**
- * Get the initiator policy filter mode that will be used.
- *
- * @return The set scan policy filter mode.
- *
- * @experimental
- */
+* Get the initiator policy filter mode that will be used.
+*
+* @return The set scan policy filter mode.
+*
+* @experimental
+*/
 virtual InitiatorPolicyMode_t getInitiatorPolicyMode() const;
 ```
 
@@ -786,16 +781,123 @@ virtual InitiatorPolicyMode_t getInitiatorPolicyMode() const;
 /**
  * Start scanning procedure in the underlying BLE stack.
  *
- * @param[in] scanningParams
- *              The GAP scanning parameters.
+ * @param[in] scanningParams The GAP scanning parameters.
  *
  * @return BLE_ERROR_NONE if the scan procedure started successfully.
  */
 virtual ble_error_t startRadioScan(const GapScanningParams &scanningParams);
 ```
 
+This function start a scan procedure if the parameter `scanningParams` is suitable
+for the underlying BLE_STACK. The scan procedure should follow the parameters
+provided by `scanningParams`.
+
+Every time the device receive an advertisement packet, the function
+`Gap::processAdvertisementReport` should be called to report to the upper layer
+that a packet has been received.
+
+```
+               GapImplementation                        BLEStack
+                  +----+----+                         +----+----+
+                       |                                   |
+Gap::startScan() +----->                                   |
+                       |        start_scan()               |
+                       +----------------------------------->
+                       |        scan started               |
+                       <-----------------------------------|
+  BLE_ERROR_NONE <-----|                                   |
+                       /                                   /
+                       |                                   <~~~~~~~~~+ advertisement report
+                       /       advertisement report        /
+                       <~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+                       |                                   |
+       Gap::processAdvertisementReport()                   |
+                       |                                   |
+   advertisement <-----+                                   |
+                       /                                   /
+                       |                                   <~~~~~~~~~+ advertisement report
+                       /       advertisement report        /
+                       <~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+                       |                                   |
+       Gap::processAdvertisementReport()                   |
+                       |                                   |
+   advertisement <-----+                                   |
+                       /                                   /
+                       /                                   /
+                       +                                   +
+```
+
+If the scan is active, a call to `Gap::stopScan()` or `Gap::reset()` should stop
+the scan.
+
+```
+               GapImplementation                        BLEStack
+                  +----+----+                         +----+----+
+                       |                                   |
+Gap::startScan() +----->                                   |
+                       |        start_scan()               |
+                       +----------------------------------->
+                       |                                   |
+                       /                                   /
+                       /                                   /
+ Gap::stopScan() or    /                                   /
+ Gap::reset()    +----->                                   |
+                       |        stop_scan()                |
+                       +----------------------------------->
+                       |        scan_stopped               |
+                       <-----------------------------------|
+  BLE_ERROR_NONE <-----|                                   |
+                       |                                   |
+                       +                                   +
+```
+
+If `scanningParams.getTimeout()` is not equal to 0, the device should scan for a
+period equal to the value of `scanningParams.getTimeout()` in seconds. Once the
+device has scanned for this period of time, the implementation should call
+`Gap:processTimeout()` with `Gap::TIMEOUT_SRC_SCAN` as  parameter.
+
+```
+               GapImplementation                        BLEStack
+                  +----+----+                         +----+----+
+                       |                                   |
+Gap::startScan()       |                                   |
+where timeout=N  +----->                                   |
+                       |        start_scan()               |
+                       +----------------------------------->
+                       /                                   /
+                       /                                   /
+                       <~~~~~~+ scan timeout (N s later)   |
+                       |                                   |
+                       |        stop_scan()                |
+                       +----------------------------------->
+                       |        scan_stopped               |
+                       <-----------------------------------|
+                       |                                   |
+Gap:processTimeout() <-+                                   |
+                       |                                   |
+                       +                                   +
+Note: timeout event may come from the stack in this case, it is likely that there
+is no need to stop the scan "manually".
+```
+
+If `scanningParams.getTimeout()` is equal to 0, the scan should continue until
+`Gap::stopScan` or `Gap::reset` is called.
+
+If the function is called while a scan is ongoing, new parameters scan parameters
+are applied and the timeout is reset to the new value.
+
+If `scanningParams.getActiveScanning()` is equal to true, the stack should
+generate scan requests and report scan response receive using the function
+`Gap::processAdvertisementReport()` otherwise, the stack should not generate
+scan request and should not report scan responses.
+
+If the scanning policy is set to `SCAN_POLICY_FILTER_ALL_ADV`, advertisements from
+devices which are not in the whitelist should not be reported.
+
 
 ### `initRadioNotification`
+
+Implementation of this API is optional.
 
 ```c++
 /**
@@ -818,6 +920,8 @@ virtual ble_error_t startRadioScan(const GapScanningParams &scanningParams);
 virtual ble_error_t initRadioNotification();
 ```
 
+TODO: document this when there is a way to stop it ....
+
 
 ### `setAdvertisingData`
 
@@ -826,17 +930,17 @@ virtual ble_error_t initRadioNotification();
  * Functionality that is BLE stack-dependent and must be implemented by the
  * ported. This is a helper function to set the advertising data in the
  * BLE stack.
- *
- * @param[in] advData
- *              The new advertising data.
- * @param[in] scanResponse
- *              The new scan response data.
+
+ * @param[in] advData The new advertising data.
+ * @param[in] scanResponse The new scan response data.
  *
  * @return BLE_ERROR_NONE if the advertising data was set successfully.
  */
 virtual ble_error_t setAdvertisingData(const GapAdvertisingData &advData, const GapAdvertisingData &scanResponse);
 ```
 
+This function set advertising data's and scan response data's. If the device is
+already scanning, the new values should be for the next round of advertisement.
 
 ### `startAdvertising`
 
@@ -846,14 +950,128 @@ virtual ble_error_t setAdvertisingData(const GapAdvertisingData &advData, const 
  * ported. This is a helper function to start the advertising procedure in
  * the underlying BLE stack.
  *
- * @param[in]
- *              The advertising parameters.
+ * @param[in] The advertising parameters.
  *
  * @return BLE_ERROR_NONE if the advertising procedure was successfully
- *         started.
+ * started.
  */
-virtual ble_error_t startAdvertising(const GapAdvertisingParams &);
+virtual ble_error_t startAdvertising(const GapAdvertisingParams& advertisingParams);
 ```
+
+This function start an advertising procedure if the advertising configuration
+contained in `advertisingParams` is valid. Otherwise, it return an appropriate
+error code.
+
+```
+                   GapImplementation                        BLEStack
+                      +----+----+                         +----+----+
+                           |                                   |
+Gap::startAdvertising() +-->                                   |
+                           |        start_advertising()        |
+                           +----------------------------------->
+                           |        advertising started        |
+                           <-----------------------------------|
+      BLE_ERROR_NONE <-----|                                   |
+                           /                                   /
+                           /                                   /~~~> advertisement
+                           /                                   /
+                           /                                   /~~~> advertisement
+                           /                                   /
+                           /                                   /~~~> advertisement                                                       
+                           /                                   /
+                           +                                   +
+```
+
+If advertising is active, a call to `Gap::stopAdvertising()` or `Gap::reset()`
+should stop advertisings.
+
+```
+                   GapImplementation                        BLEStack
+                      +----+----+                         +----+----+
+                           |                                   |
+Gap::startAdvertising() +-->                                   |
+                           |        start_advertising()        |
+                           +----------------------------------->
+                           |                                   |                           
+                           /                                   /
+                           /                                   /
+Gap::stopAdvertising() or  /                                   /
+     Gap::reset()    +----->                                   |
+                           |        stop_advertising()         |
+                           +----------------------------------->
+                           |        advertising stopped        |
+                           <-----------------------------------|                                
+      BLE_ERROR_NONE <-----|                                   |
+                           |                                   |
+                           +                                   +
+```
+
+
+If `advertisingParams.getTimeout()` is not equal to 0, the device should advertise
+for a period equal to the value of `advertisingParams.getTimeout()` in seconds.
+Once the device has advertised for this period of time, the implementation should
+call `Gap:processTimeout()` with `Gap::TIMEOUT_SRC_ADVERTISING` as  parameter.
+
+```
+                   GapImplementation                            BLEStack
+                      +----+----+                              +----+----+
+                           |                                        |
+  Gap::startAdvertising()  |                                        |
+    where timeout=N  +----->                                        |
+                           |        start_advertising()             |
+                           +---------------------------------------->
+                           /                                        /
+                           /                                        /
+                           <~~~~~~+ advertising timeout (N s later) |
+                           |                                        |
+                           |        stop_advertising()              |
+                           +---------------------------------------->
+                           |        scan_stopped                    |
+                           <----------------------------------------|
+                           |                                        |
+    Gap:processTimeout() <-+                                        |
+                           |                                        |
+                           +                                        +
+Note: timeout event may come from the stack in this case, it is likely that there
+is no need to stop advertisements "manually".
+```
+
+
+If `advertisingParams.getTimeout()` is equal to 0, advertising should continue until
+`Gap::stopAdvertising` or `Gap::reset` is called.
+
+If the function is called while advertising is ongoing, new parameters scan parameters
+are applied and the timeout is reset to the new value.
+
+If `advertisingParams.getAdvertisingType()` is equal to
+`GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED`  or
+`GapAdvertisingParams::ADV_SCANNABLE_UNDIRECTED`, the stack should
+generate a scan response with the scan response payload set by `Gap::setAdvertisingData`
+if a scanner make a scan request. Otherwise, the device should not respond scan
+request.
+
+If `advertisingParams.getAdvertisingType()` is equal to
+`GapAdvertisingParams::ADV_NON_CONNECTABLE_UNDIRECTED`, the stack not should
+listen for scan requests.
+
+If `advertisingParams.getAdvertisingType()` is equal to
+`GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED`, the stack should listen and
+accept connections request.
+
+If `advertisingParams.getAdvertisingType()` is equal to
+`GapAdvertisingParams::ADV_SCANNABLE_UNDIRECTED` or
+`GapAdvertisingParams::ADV_NON_CONNECTABLE_UNDIRECTED`, the stack should not
+for connections request.
+
+If the advertising policy is set to `ADV_POLICY_FILTER_SCAN_REQS`, scan requests
+from devices which are not in the whitelist should be ignored.
+
+If the advertising policy is set to `ADV_POLICY_FILTER_CONN_REQS`, connection
+requests from devices which are not in the whitelist should be ignored.
+
+If the advertising policy is set to `ADV_POLICY_FILTER_ALL_REQS`, scan and
+connection requests from devices which are not in the whitelist should be
+ignored.
 
 
 ### `reset`

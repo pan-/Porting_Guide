@@ -19,4 +19,7 @@ in case of PRIVATE_RESOLVABLE_ADDRESS ?
 `getAddress`: Why not const ?
 `GapState_t`: Why fields are not bool ?
 `connection timeout`: It should be possible to know which connection started timeout.
-`updateConnectionParams`: Why there is no user callback for this ?? 
+`updateConnectionParams`: Why there is no user callback for this ??
+`startScan` is inconstitent with other APIs.
+where is `processRadioNotification` ?
+wheer is the function stopRadioNotification ?
