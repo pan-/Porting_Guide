@@ -265,23 +265,23 @@ Overview....
 
 #### [`BleInstanceBase`]
 
-Porting guide for this class is accessible [here](../BleInstanceBase.md)
+Porting guide for this class is accessible [here](./BleInstanceBase.md)
 
 #### [`Gap`]
 
-Porting guide for this class is accessible [here](../Gap.md)
+Porting guide for this class is accessible [here](./Gap.md)
 
 #### [`GattServer`]
 
-Porting guide for this class is accessible [here](../GattServer.md)
+Porting guide for this class is accessible [here](./GattServer.md)
 
 #### [`GattClient`]
 
-Porting guide for this class is accessible [here](../GattClient.md)
+Porting guide for this class is accessible [here](./GattClient.md)
 
 #### [`SecurityManager`]
 
-Porting guide for this class is accessible [here](../SecurityManager.md)
+Porting guide for this class is accessible [here](./SecurityManager.md)
 
 
 [`BLE.h`]: https://github.com/ARMmbed/ble/blob/master/ble/BLE.h
