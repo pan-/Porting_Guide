@@ -265,7 +265,7 @@ Overview....
 
 #### [`BleInstanceBase`]
 
-Porting guide for this class is accessible [here](./BleInstanceBase.md)
+Porting guide for this class is accessible [here](./BLEInstanceBase.md)
 
 #### [`Gap`]
 
