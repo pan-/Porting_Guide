@@ -44,3 +44,7 @@ are not portable at all.
 callback once the characteristic has already been registered in a GattServer will
 not does what is expected.
 * `read` and `write` have shared security.
+
+#GattClient
+* `onServiceDiscoveryTermination` why this function is handled at the implementation
+level ?
