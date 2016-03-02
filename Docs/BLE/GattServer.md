@@ -1,4 +1,4 @@
-# BLEInstanceBase
+# GattServer
 
 This document provides a porting guide for the class [`GattServer`] available
 in [BLE_API] version 2.5.1.
