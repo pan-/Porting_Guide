@@ -1,25 +1,21 @@
 # BLEInstanceBase
 
 This document provides a porting guide for the class [`BLEInstanceBase`] available
-in the [ble module] version 2.5.1.
+in the mbed OS 5.
 
 The [`BLEInstanceBase`] API is declared in the header file [`BLEInstanceBase.h`].
 
 
 ## Description
 
-[`BLEInstanceBase`] is the private implementation of the class [`BLE`]. It is a
-pure abstract base class which provide the following functionalities:
+[`BLEInstanceBase`] is the private implementation of the class [`BLE`]. It is an
+abstract base class which provide the following functionalities:
 * Manage the state of the underlying BLE stack.
-* Access to instances of abstractions of BLE_API: ([`Gap`], [`GattServer`], [`GattClient`],
+* Access to instances of abstractions of mbed BLE: ([`Gap`], [`GattServer`], [`GattClient`],
 [`SecurityManager`]).  
 
-Since abstractions of BLE_API are accessed through this class, it is common that
+Since abstractions of mbed BLE are accessed through this class, it is common that
 implementations of this class contains the instances of those abstractions.  
-
-## Requirements
-
-Some more info about the module comes here.
 
 ## Note
 
@@ -61,6 +57,8 @@ public:
 
     virtual void waitForEvent(void);
 
+    virtual void processEvents();
+
 private:
 
     private void whenStackInitialized(/*parameters*/ int error);
@@ -97,11 +95,11 @@ private:
 extern BLEInstanceBase* createBLEInstance(void);
 ```
 
-This function is used by BLE_API to get access to the instance of the
+This function is used by mbed BLE to get access to the instance of the
 implementation of [`BLEInstanceBase`]. Its name can be misleading, because it is
 not expected that a new instance of [`BLEInstanceBase`] will be created at each
 call. Conceptually, it is equivalent to a function `getInstance` of a singleton.
-It is also important to note that BLE_API will **never** delete objects resulting
+It is also important to note that mbed BLE will **never** delete objects resulting
 from this call.
 
 #### Possible implementation
@@ -111,7 +109,7 @@ It is recommended to implement this function as a static singleton.
 ```c++
 // use static storage for this variable, it will lives for the whole duration
 // of the program.
-// Usage of dynamic memory is strongly discouraged here since BLE_API will never
+// Usage of dynamic memory is strongly discouraged here since mbed BLE will never
 // delete variable acquired with createBLEInstance.
 BLEInstanceFoo BLEInstanceFoo::instance = BLEInstanceFoo(/*constructor arguments*/);
 
@@ -448,7 +446,7 @@ This is a sleep function that will return when there is an application-specific
 interrupt, but the MCU might wake up several times before returning (to service
 the stack). This is not always interchangeable with WFE().
 
-This function is used by mbed-classic users to go to sleep when they use BLE_API.
+This function is used by mbed-classic users to go to sleep when they use mbed BLE.
 
 #### Possible implementation
 
@@ -460,10 +458,23 @@ void BLEInstanceFoo::waitForEvent(void) {
 ```
 
 
+### `processEvents`
 
+```c++
+/**
+ * Process ALL pending events living in the BLE stack .
+ * Return once all events have been consumed.
+ */
+virtual void processEvents();
+```
 
+This function is called by the user code to process **all** the events pending
+in the stack used by the implementation.
 
+When an event occur, the implementation should signal to the user code that the
+stack is ready to be processed by calling the function `BLEInstanceBase::signalEventsToProcess`.
 
+s
 [ble module]: https://github.com/ARMmbed/ble
 [`BLE.h`]: https://github.com/ARMmbed/ble/blob/master/ble/BLE.h
 [`BLE`]: https://docs.mbed.com/docs/ble-api/en/master/api/classBLE.html

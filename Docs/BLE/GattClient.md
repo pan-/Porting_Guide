@@ -13,14 +13,6 @@ a GATT client.
 
 A valid port of BLE_API should provide an implementation for this class.
 
-## Requirements
-
-Some more info about the module comes here.
-
-## Note
-
-
-
 ## API
 
 
